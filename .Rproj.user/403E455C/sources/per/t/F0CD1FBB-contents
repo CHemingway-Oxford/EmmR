@@ -1,0 +1,54 @@
+#required packages
+library(readxl)
+library("tidyverse")
+library(viridis)
+library(RColorBrewer)
+library(ggExtra)
+library(psych)
+
+
+#load and clean Data
+Data_Media_TP <- read_excel("C:/Users/Asus/Documents/Doktorarbeit II/Tabellen/Versch Medien Vgl Dicken & Gewichte.xlsx", 
+                                                sheet = "Thickness_foR", col_types = c("text", 
+                                                                                       "skip", "skip", "numeric", "numeric", 
+                                                                                       "numeric", "numeric", "numeric", 
+                                                                                       "numeric"))
+View(Data_Media_TP)
+
+#samplesize
+sample_size = Data_Media_TP %>% group_by(Medium) %>% summarize(num=n())
+
+#box plot
+p1 <- Data_Media_TP %>% 
+  left_join(sample_size) %>%
+  mutate(myaxis = paste0(Medium, "\n", "n=", num)) %>%
+  ggplot(aes(x = myaxis, y=weight, fill = Medium)) + 
+  geom_boxplot(
+    #outlier.colour = NA#,
+    # custom boxes
+    #color="blue",
+    #fill="blue",
+    #alpha=0.2,
+    
+    # Notch?
+    #notch=FALSE,
+    #notchwidth = 0.8,
+    
+    # custom outliers
+    #outlier.colour="red",
+    #outlier.fill="red",
+    #outlier.size=3
+  ) + 
+  #expand_limits(y = c(0,5:3)) +
+  scale_fill_brewer(palette="PuRd") +
+  geom_point(color="black", size=1, alpha=0.9) +
+  ggtitle("Effects of OD") +
+  theme_light()+
+  theme(legend.position="none", 
+        plot.title = element_text(size=20),
+        axis.title = element_text(size = 16),
+        axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 11)
+  ) +
+  xlab("optical density of inoculum")+
+  ylab(label = c("Patch weight [mg]"))

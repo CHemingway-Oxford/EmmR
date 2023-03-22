@@ -7,7 +7,7 @@ library(hrbrthemes)
 library(grid)
 library(cowplot)
 
-DatenEmma <- read_excel("/Users/ChrisHemingway/Desktop/Doktorarbeit/r_programming/EMMA-Paper/DatenEmma.xlsx", 
+DatenEmma <- read_excel("C:/Users/Asus/Documents/Doktorarbeit II/Tabellen/DatenEmma.xlsx", 
                         sheet = "Tabelle1", col_types = c("text", 
                                                           "text",
                                                           "text",
@@ -32,7 +32,7 @@ data_lollipop <- DatenEmma %>%
   mutate(patch = ifelse(patch == "PP" , "Pericardium" , "Bacterial Cellulose")) %>% 
   drop_na(max_pressure) %>%
   filter(test_series_nr != "1") %>% 
-  mutate(ID = c(1:30))
+  mutate(ID = c(1:20))
 #na.omit() # hash-out if height_max
 
 
