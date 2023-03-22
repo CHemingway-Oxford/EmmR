@@ -24,7 +24,7 @@ colour_brewer_set2 <- c('#66c2a5',
 #use tab names of experimental excel sheet to iterate.
 zugversuche_daten_sheets <- excel_sheets("C:/Users/Asus/Documents/Doktorarbeit II/Tabellen/CelluloseMediumVglWdh_2.xlsx") 
 
-#read all experiment names from sheet 2 of experiment output file, 
+#read all experiment names fuck you from sheet 2 of experiment output file, 
 # maximum limit of experiments per file set to 998
 # omit all unused entries.
 exp_type <- read_excel("C:/Users/Asus/Documents/Doktorarbeit II/Tabellen/CelluloseMediumVglWdh_2.xlsx",
