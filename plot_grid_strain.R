@@ -13,21 +13,21 @@ library(cowplot)
 # pal2 <- choose_palette()
 
 #load custom colour scheme, and make custom colour palette
-colours <- read_excel("/Users/ChrisHemingway/Desktop/Doktorarbeit/r_programming/EMMA-Paper/hexCodes_zugversuche.xlsx",
+colours <- read_excel("C:/Users/Asus/Documents/Doktorarbeit II/Tabellen/HexCodes_zugversuche.xlsx",
                       col_names = FALSE)
-colour_palette <- colours$`...2`[c(1,8,15,22)]
+colour_palette <- colours$`...2`[c(1,12,15)]
 colour_brewer_set2 <- c('#66c2a5',
                         '#fc8d62',
                         '#8da0cb',
                         '#e78ac3')
-##compile data from CelluloseMediumVgl_2.xlsx into one workable file.
+##compile data from CelluloseMediumVgl_2 WDH.xlsx into one workable file.
 #use tab names of experimental excel sheet to iterate.
-zugversuche_daten_sheets <- excel_sheets("/Users/ChrisHemingway/Desktop/Doktorarbeit/r_programming/EMMA-Paper/CelluloseMediumVgl_2.xlsx") 
+zugversuche_daten_sheets <- excel_sheets("C:/Users/Asus/Documents/Doktorarbeit II/Tabellen/CelluloseMediumVglWdh_2.xlsx") 
 
 #read all experiment names from sheet 2 of experiment output file, 
 # maximum limit of experiments per file set to 998
 # omit all unused entries.
-exp_type <- read_excel("/Users/ChrisHemingway/Desktop/Doktorarbeit/r_programming/EMMA-Paper/CelluloseMediumVgl_2.xlsx",
+exp_type <- read_excel("C:/Users/Asus/Documents/Doktorarbeit II/Tabellen/CelluloseMediumVglWdh_2.xlsx",
                        sheet = 2,
                        range = 'A2:A1000',
                        col_names = 'probe') %>% 
@@ -41,7 +41,7 @@ zugversuche_datenFull <- data.frame(row.names = c("Dehnung", "Standardkraft"))
 for (i in 4:length(zugversuche_daten_sheets)){
   # for (i in 4){
   #make an intermediate variable x that stores all data points within one experiment
-  x <- read_excel("/Users/ChrisHemingway/Desktop/Doktorarbeit/r_programming/EMMA-Paper/CelluloseMediumVgl_2.xlsx",
+  x <- read_excel("C:/Users/Asus/Documents/Doktorarbeit II/Tabellen/CelluloseMediumVglWdh_2.xlsx",
                   sheet = i,
                   skip = 4
                   ,col_types = c("numeric" , "numeric")
@@ -72,12 +72,12 @@ zugversuche_datenFull2$probe <- factor(zugversuche_datenFull$probe,
                                        levels = unique(zugversuche_datenFull$probe))
 
 #load earlier dataset "Zugversuche 1: with c100 medium"
-zugversuche1_daten <- read_excel("~/Desktop/Doktorarbeit/r_programming/EMMA-Paper/ZugversucheNeu.xlsx",
-                                 sheet = "Glucose_einfluss",
+zugversuche1_daten <- read_excel("C:/Users/Asus/Documents/Doktorarbeit II/Tabellen/Zugversuche_Neu2.xlsx",
+                                 sheet = "C100MediumVglWdh1",
                                  col_types = c("numeric",
                                                "numeric",
                                                "numeric")) %>% 
-  mutate(large_group = if_else(Probe %in% c(2,5,6,7,8,9,10,11,12), true = "condition1", false = "group 4")) %>% 
+  mutate(large_group = if_else(Probe %in% c(1,2,4,5,6,7), true = "condition1", false = "group 4")) %>% 
   filter(large_group=="group 4") %>% 
   rename(Probe, "probe" = "Probe") %>% 
   rename(`Dehnung [%]`, "Dehnung" = "Dehnung [%]") %>% 
@@ -87,15 +87,15 @@ zugversuche1_daten <- zugversuche1_daten[,c(3,1,2,4)]
 zugversuche1_daten$probe2 <- zugversuche1_daten$probe
 zugversuche1_daten$probe <-  as.character(zugversuche1_daten$probe)
 #rename values of zugversuche1_daten$probe
-counter_variable <- c(unique(zugversuche1_daten$probe2))
-for (i in 13:21) {
-  zugversuche1_daten <- zugversuche1_daten   %>% mutate(
-    probe = ifelse(
-      probe2 == i,
-      paste("1_Probe_",i),
-      zugversuche1_daten$probe)
-  )
-}
+#counter_variable <- c(unique(zugversuche1_daten$probe2))
+#for (i in 13:21) {
+ # zugversuche1_daten <- zugversuche1_daten   %>% mutate(
+  #  probe = ifelse(
+   #   probe2 == i,
+    #  paste("1_Probe_",i),
+     # zugversuche1_daten$probe)
+  #)
+#}
 zugversuche1_daten <- zugversuche1_daten[,1:4]
 
 zugversuche_datenFull3 <- rbind(zugversuche1_daten , zugversuche_datenFull2)
@@ -170,8 +170,8 @@ pg2 <- plot_grid(plotlist =
 pg2 <- plot_grid(pg2, legend, ncol = 2, rel_widths = c(9,2))
 
 pg2
-ggsave(filename = "cellulose_medium_vergleich_asTiles", plot = pg2, device = "tiff" , dpi = 300 ,
+ggsave(filename = "cellulose_medium_vergleich_asTiles.png", plot = pg2, device = "png" , dpi = 300 ,
        units = "cm" , width = 16.8 , height = 11)
 
-ggsave(filename = "cellulose_medium_vergleich_ineinem", plot = plot_legend, device = "tiff" , dpi = 300 ,
+ggsave(filename = "cellulose_medium_vergleich_ineinem.png", plot = plot_legend, device = "png" , dpi = 300 ,
        units = "cm" , width = 16.8 , height = 11)
