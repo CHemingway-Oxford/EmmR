@@ -7,6 +7,7 @@ library(hrbrthemes)
 library(grid)
 library(cowplot)
 
+#Load and clean Data 
 DatenEmma <- read_excel("C:/Users/Asus/Documents/Doktorarbeit II/Tabellen/DatenEmma.xlsx", 
                         sheet = "Tabelle1", col_types = c("text", 
                                                           "text",
@@ -80,28 +81,7 @@ legend <- get_legend(
   # guides(color = guide_legend(override.aes = list(size=2 , stroke = 2)))
 )
 
-####make figure 3_complete:
-source("/Users/ChrisHemingway/Desktop/Doktorarbeit/r_programming/Figure2/maxp_vs_thickness.R")
-p_maxp_th <- p_maxp
 
-row_1 <- plot_grid(
-  p_maxp_th +
-    theme(
-      legend.position = "none"), 
-  p_lolli +
-    theme(
-      legend.position = "none"), 
-  
-  nrow = 1, labels = c("a" , "b"))
-
-figure3_final <- plot_grid(
-  row_1,
-  legend,
-  ncol = 1,
-  rel_heights = c(12,1)
-)
-figure3_final
-
-ggsave(filename = "Fig3_full", plot = figure3_final, device = "tiff" , dpi = 1000 , 
+ggsave(path = "C:/Users/Asus/Documents/Doktorarbeit II/R_Coding/Github/EmmR", filename = "Lollipop.png", plot = p_lolli, device = "png" , dpi = 1000 , 
        units = "cm" , width = 16.8 , height = 9)
 

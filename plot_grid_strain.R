@@ -22,12 +22,12 @@ colour_brewer_set2 <- c('#66c2a5',
                         '#e78ac3')
 ##compile data from CelluloseMediumVgl_2 WDH.xlsx into one workable file.
 #use tab names of experimental excel sheet to iterate.
-zugversuche_daten_sheets <- excel_sheets("C:/Users/Asus/Documents/Doktorarbeit II/Tabellen/CelluloseMediumVglWdh_2.xlsx") 
+zugversuche_daten_sheets <- excel_sheets("C:/Users/Asus/Documents/Doktorarbeit II/Tabellen/CelluloseMediumVglWdh2.1.xlsx") 
 
-#read all experiment names fuck you from sheet 2 of experiment output file, 
+#read all experiment names from sheet 2 of experiment output file, 
 # maximum limit of experiments per file set to 998
 # omit all unused entries.
-exp_type <- read_excel("C:/Users/Asus/Documents/Doktorarbeit II/Tabellen/CelluloseMediumVglWdh_2.xlsx",
+exp_type <- read_excel("C:/Users/Asus/Documents/Doktorarbeit II/Tabellen/CelluloseMediumVglWdh2.1.xlsx",
                        sheet = 2,
                        range = 'A2:A1000',
                        col_names = 'probe') %>% 
@@ -41,7 +41,7 @@ zugversuche_datenFull <- data.frame(row.names = c("Dehnung", "Standardkraft"))
 for (i in 4:length(zugversuche_daten_sheets)){
   # for (i in 4){
   #make an intermediate variable x that stores all data points within one experiment
-  x <- read_excel("C:/Users/Asus/Documents/Doktorarbeit II/Tabellen/CelluloseMediumVglWdh_2.xlsx",
+  x <- read_excel("C:/Users/Asus/Documents/Doktorarbeit II/Tabellen/CelluloseMediumVglWdh2.1.xlsx",
                   sheet = i,
                   skip = 4
                   ,col_types = c("numeric" , "numeric")
@@ -72,13 +72,9 @@ zugversuche_datenFull2$probe <- factor(zugversuche_datenFull$probe,
                                        levels = unique(zugversuche_datenFull$probe))
 
 #load earlier dataset "Zugversuche 1: with c100 medium"
-zugversuche1_daten <- read_excel("C:/Users/Asus/Documents/Doktorarbeit II/Tabellen/Zugversuche_Neu2.xlsx",
-                                 sheet = "C100MediumVglWdh1",
-                                 col_types = c("numeric",
-                                               "numeric",
-                                               "numeric")) %>% 
-  mutate(large_group = if_else(Probe %in% c(1,2,4,5,6,7), true = "condition1", false = "group 4")) %>% 
-  filter(large_group=="group 4") %>% 
+zugversuche1_daten <- read_excel("Doktorarbeit II/Tabellen/Zugversuche_Neu2.xlsx", 
+                                                                sheet = "C100MediumVglWdh1")%>% 
+  mutate(large_group = "group 4") %>% 
   rename(Probe, "probe" = "Probe") %>% 
   rename(`Dehnung [%]`, "Dehnung" = "Dehnung [%]") %>% 
   rename(`Standardkraft [N]`, "Standardkraft" = "Standardkraft [N]") %>% 
@@ -127,8 +123,9 @@ for (i in 1:length(unique(zugversuche_datenFull3$groupl))){
     ))+
     geom_line()+
     scale_colour_manual(values = colour_brewer_set2[i],
-                        labels = c("45|45|10", "1/3|1/3|1/3","50|50","c-100"))+
+                      labels = c("45|45|10", "1/3|1/3|1/3","50|50","c-100"))+
     xlim(0,30)+
+    ylim(0,3)+
     theme_minimal_grid()+
     theme(
       legend.position="none"
@@ -170,8 +167,8 @@ pg2 <- plot_grid(plotlist =
 pg2 <- plot_grid(pg2, legend, ncol = 2, rel_widths = c(9,2))
 
 pg2
-ggsave(filename = "cellulose_medium_vergleich_asTiles.png", plot = pg2, device = "png" , dpi = 300 ,
+ggsave(path = "C:/Users/Asus/Documents/Doktorarbeit II/R_Coding/Github/EmmR", filename = "cellulose_medium_vergleich_asTiles.png", plot = pg2, device = "png" , dpi = 300 ,
        units = "cm" , width = 16.8 , height = 11)
 
-ggsave(filename = "cellulose_medium_vergleich_ineinem.png", plot = plot_legend, device = "png" , dpi = 300 ,
+ggsave(path = "C:/Users/Asus/Documents/Doktorarbeit II/R_Coding/Github/EmmR",filename = "cellulose_medium_vergleich_ineinem.png", plot = plot_legend, device = "png" , dpi = 300 ,
        units = "cm" , width = 16.8 , height = 11)
