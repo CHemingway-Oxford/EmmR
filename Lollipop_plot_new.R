@@ -50,7 +50,7 @@ p_lolli <- data_lollipop %>%
   geom_segment(aes(x = 1.6, y = data_lollippop_mean$x[2], xend = 2.4, yend = data_lollippop_mean$x[2], color = levels(Medium)[2]))+
   geom_segment(aes(x = 2.6, y = data_lollippop_mean$x[3], xend = 3.4, yend = data_lollippop_mean$x[3], color = levels(Medium)[3]))+
   scale_shape_manual(values = c(20, 4) , labels  = c("No" , "Yes")) +
-  scale_color_manual(values = colour_palette , labels=c("3|3|3" , "45|45|10"  , "50|50"))+
+  scale_color_manual(values = colour_palette , labels=c("N-10", "N-30","N-50"))+
   scale_y_continuous(limits = c(750,1500) , breaks=c(600 , 800 , 1000,1200, 1400) ,
                      expand = c(0,0))+
   scale_x_discrete(breaks = NULL)+

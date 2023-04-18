@@ -160,10 +160,12 @@ zugversuche_datenFull3 <- rbind(zugversuche_datenFull2,zugversuche2_daten) %>%
 # mypal3 <- colorRampPalette(brewer.pal(6, "Purples"))
 
 plot_legend <- zugversuche_datenFull3 %>%
-  ggplot( aes(x=`Dehnung`, y=Standardkraft_norm, group = probe
+  ggplot( aes(x=`Dehnung`, y=Standardkraft, group = probe
               , colour = groupl
   ))+
   geom_line()+
+  ylab('force')+
+  xlab('strain')+
   scale_colour_manual(values = colour_brewer_set2, labels=c("N-10", "N-30","N-50","C-100"))+
   theme_minimal_grid()+
   theme()+
@@ -178,7 +180,7 @@ for (i in 1:length(unique(zugversuche_datenFull3$groupl))){
     filter(groupl==paste0('group ',i))
   var_p <- paste0('p_zugversuch_',i)
   plot <- daten_temp%>%
-    ggplot( aes(x=`Dehnung`, y=`Standardkraft_norm`, group = probe
+    ggplot( aes(x=`Dehnung`, y=`Standardkraft`, group = probe
                 , colour = groupl
     ))+
     geom_line()+
@@ -186,7 +188,7 @@ for (i in 1:length(unique(zugversuche_datenFull3$groupl))){
                       labels = c("N-10", "N-30","N-50","C-100"))+
     xlim(0,30)+
     ylim(0,3)+
-    ylab('normalised force')+
+    ylab('force')+
     xlab('strain')+
     theme_minimal_grid()+
     theme(
