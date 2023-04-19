@@ -25,7 +25,7 @@ data_lollipop <- DatenEmma %>%
   select(Pressure_max_mmHg, Rupture, Medium) %>%
   drop_na(Pressure_max_mmHg) %>%
   # mutate(ID = c(1:24))
-  mutate(Medium=factor(Medium, levels=c('333','454510','5050'))) %>% 
+  mutate(Medium=factor(Medium, levels=c('454510','333','5050'))) %>% 
   mutate(Rupture=factor(Rupture, levels = c('0','1')))
 
 data_lollippop_mean <- data_lollipop %>%

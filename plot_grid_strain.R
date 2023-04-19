@@ -24,7 +24,87 @@ library(cowplot)
 colour_brewer_set2 <- c('#66c2a5',
                         '#fc8d62',
                         '#8da0cb',
-                        '#e78ac3')
+                        '#e78ac3',
+                        '#939399', # goretex
+                        '#a6d854') # pericardium
+
+
+# retrieve the thicknesses of CelluloseMediumVgl_2 WDH.xlsx: 
+thickness_Controls  <- read_excel("/Users/ChrisHemingway/Desktop/Zugversuch Postproduction PU_HCH.xlsx", 
+                                  sheet = "Ergebnisse", range = "A3:L29", 
+                                  col_names = c('probe','dicke','groupl'),
+                                  col_types = c("text", 
+                                                "skip", "skip", "skip", "skip", "skip", 
+                                                "skip", "skip", "numeric","skip", "skip","text")) %>% 
+  drop_na()
+view(thickness_Controls)
+
+
+##compile data from CelluloseMediumVgl_2 WDH.xlsx into one workable file.
+#use tab names of experimental excel sheet to iterate.
+zugversuche_daten_sheets_controls <- excel_sheets("/Users/ChrisHemingway/Desktop/Zugversuch Postproduction PU_HCH.xlsx") 
+
+
+# #read all experiment names from sheet 2 of experiment output file, 
+# # maximum limit of experiments per file set to 998
+# # omit all unused entries.
+exp_type_controls <- read_excel("/Users/ChrisHemingway/Desktop/Zugversuch Postproduction PU_HCH.xlsx",
+                                sheet = 2,
+                                range = 'A2:A1000',
+                                col_names = 'probe') %>%
+  na.omit()
+
+# groupl_type <- read_excel("Desktop/CelluloseMediumVglWdh2.1.xlsx",
+#                           sheet = 2,
+#                           range = 'L2:L1000',
+#                           col_names = 'probe') %>% 
+#   na.omit()
+
+
+
+#initiate data frame to be filled in for loop
+zugversuche_datenFull_controls <- data.frame(row.names = c("Dehnung", "Standardkraft", "probe","dicke","groupl"))
+
+#iterate along the tab names to extract relevant experimental data,
+# start at i=4, as first data is stored from sheet 4.
+for (i in 4:length(zugversuche_daten_sheets_controls)){
+  # for (i in 4){
+  #make an intermediate variable x that stores all data points within one experiment
+  x <- read_excel("/Users/ChrisHemingway/Desktop/Zugversuch Postproduction PU_HCH.xlsx",
+                  sheet = i,
+                  skip = 4
+                  ,col_types = c("numeric" , "numeric")
+                  ,col_names = c("Dehnung", "Standardkraft")
+  ) 
+  
+  #find the maximum of x, and remove all values that follow after < 80% of the maximum
+  x <- x %>% filter(
+    # Standardkraft<=(0.8 * max(x$Standardkraft)) &
+    # x <- x %>% filter(Standardkraft >= 1.389771            
+    Dehnung <= (Dehnung[which.max(Standardkraft)] + 0.5)
+  )
+  #add $probe with experiment name and $group with experimental group for colour code
+  x$probe <- exp_type_controls$probe[i-3]
+  x <- x%>% 
+    left_join(thickness_Controls) %>% 
+    na.omit()
+  
+  #concatenate into full experimental dataframe
+  zugversuche_datenFull_controls <- rbind(zugversuche_datenFull_controls,x)
+}
+rm(x) #delete intermediate variable
+
+
+#reorder columns such that probe is the first column
+zugversuche_datenFull2_controls <- zugversuche_datenFull_controls[,c(3,1,2,4,5)]
+
+##turn probe into factor 
+
+zugversuche_datenFull2_controls$probe <- as.factor(zugversuche_datenFull_controls$probe)
+zugversuche_datenFull2_controls$probe <- factor(zugversuche_datenFull_controls$probe,
+                                                levels = unique(zugversuche_datenFull_controls$probe))
+
+zugversuche_datenFull2_controls$Standardkraft_norm <- zugversuche_datenFull2_controls$Standardkraft / zugversuche_datenFull2_controls$dicke
 
 
 # retrieve the thicknesses of CelluloseMediumVgl_2 WDH.xlsx: 
@@ -153,6 +233,7 @@ zugversuche2_daten$Standardkraft_norm <- zugversuche2_daten$Standardkraft / zugv
 zugversuche_datenFull3 <- rbind(zugversuche_datenFull2,zugversuche2_daten) %>% 
   drop_na()
 
+zugversuche_datenFull3 <- rbind(zugversuche_datenFull3, zugversuche_datenFull2_controls)
 
 # zugversuche_datenFull3 <-  zugversuche_datenFull2
 
@@ -166,14 +247,16 @@ plot_legend <- zugversuche_datenFull3 %>%
   geom_line()+
   ylab('force')+
   xlab('strain')+
-  scale_colour_manual(values = colour_brewer_set2, labels=c("N-10", "N-30","N-50","C-100"))+
+  scale_colour_manual(values = colour_brewer_set2, labels=c("N-10", "N-30","N-50","C-100" , "PU-patch"))+
   theme_minimal_grid()+
   theme()+
   # geom_label_repel(aes(label = group),
   #                  nudge_x = 1,
   #                  na.rm = TRUE) +
   # ggtitle(label = "Mediumw
-  labs(colour = "")
+  labs(colour = "")+
+  ylim(0,5)+
+  xlim(0,50)
 
 for (i in 1:length(unique(zugversuche_datenFull3$groupl))){
   daten_temp <- zugversuche_datenFull3%>%
@@ -185,7 +268,7 @@ for (i in 1:length(unique(zugversuche_datenFull3$groupl))){
     ))+
     geom_line()+
     scale_colour_manual(values = colour_brewer_set2[i],
-                      labels = c("N-10", "N-30","N-50","C-100"))+
+                      labels = c("N-10", "N-30","N-50","C-100" , "PU-patch"))+
     xlim(0,30)+
     ylim(0,3)+
     ylab('force')+

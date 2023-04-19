@@ -20,12 +20,12 @@ colour_brewer_set2 <- c('#66c2a5',
 DatenEmma_thickness <- read_excel("Desktop/Medien_Vgl_Dicken-Gewichte_Pressure.xlsx", 
                              sheet = "Thickness_foR", col_types = c("skip", 
                                                                     "numeric", "skip", "skip", "skip", 
-                                                                    "skip", "skip", "skip", "numeric", 
-                                                                    "skip"),
-                             range = 'A2:J27',
+                                                                    "skip", "skip", "skip", "numeric"),
+                             range = 'A2:I34',
                              col_names = c('probe','thickness')) %>%
   drop_na() %>% 
   mutate(probe = paste0('Test ',probe))
+view(DatenEmma_thickness)
 
 DatenEmma_maxp <- read_excel("Desktop/Medien_Vgl_Dicken-Gewichte_Pressure.xlsx", 
                              sheet = "max Pressure", col_types = c("skip", 
@@ -34,10 +34,12 @@ DatenEmma_maxp <- read_excel("Desktop/Medien_Vgl_Dicken-Gewichte_Pressure.xlsx",
                              col_names = c('medium','probe','pressure','rupture'),
                              range = 'A2:G31') %>% 
   drop_na() %>% 
-  mutate(medium = factor(medium, levels = c('454510','5050','333')))
+  mutate(medium = factor(medium, levels = c('454510','333','5050')))
+view(DatenEmma_maxp)
 
 DatenEmma <- inner_join(DatenEmma_thickness, DatenEmma_maxp) %>% 
   filter(rupture == 1)
+view(DatenEmma)
 
 plot(DatenEmma$thickness,DatenEmma$pressure)
 
@@ -47,19 +49,19 @@ R2.exp <- expression(paste(" ",R^2 ,"= 0.2467"))
 
 
 ### plot the data with linear regression based on N-10 medium subset:
-p_regression_thickness_maxp <- DatenEmma %>% 
+p_regression_thickness_maxp <- DatenEmma[DatenEmma$medium == '454510', ] %>% 
   ggplot(
     aes(x = thickness , y = pressure , color = medium)
   )+
   geom_point( size = 3 , alpha = 1)+
-  scale_colour_manual(values = colour_brewer_set2[1:2],
-                      labels = c("N-10", "N-30","N-50","C-100"))+
+  scale_colour_manual(values = colour_brewer_set2[1:3],
+                      labels = c("N-10", "N-50","N-30","C-100"))+
   geom_smooth(data =DatenEmma[DatenEmma$medium == '454510', ],
     # aes(
     #       x = DatenEmma$thickness , y = DatenEmma$pressure
     #    )  , 
     method=lm , color="grey", fill="#69b3a2", se=TRUE)+
-  geom_label(aes(x = 3.05 , y = 1350 , label = "atop(r^2 == 0.2467, 
+  geom_label(aes(x = 3.15 , y = 1350 , label = "atop(r^2 == 0.2467, 
                  \np == 0.082)"),
              color = 'black' , parse = T)+
   ylab('pressure [mmHg]')+
