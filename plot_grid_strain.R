@@ -13,16 +13,13 @@ library(cowplot)
 # pal2 <- choose_palette()
 
 #load custom colour scheme, and make custom colour palette
-colours <- read_excel("C:/Users/Asus/Documents/Doktorarbeit II/Tabellen/HexCodes_zugversuche.xlsx",
-                      col_names = FALSE)
+
 colour_palette <- colours$`...2`[c(1,12,15)]
 colour_brewer_set2 <- c('#66c2a5',
                         '#fc8d62',
                         '#8da0cb',
                         '#e78ac3')
-##compile data from CelluloseMediumVgl_2 WDH.xlsx into one workable file.
-#use tab names of experimental excel sheet to iterate.
-zugversuche_daten_sheets <- excel_sheets("C:/Users/Asus/Documents/Doktorarbeit II/Tabellen/CelluloseMediumVglWdh_2.xlsx") 
+
 
 #read all experiment names from sheet 2 of experiment output file, 
 # maximum limit of experiments per file set to 998
