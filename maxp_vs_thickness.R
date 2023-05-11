@@ -5,7 +5,7 @@ library(ggplot2)
 library(ggExtra)
 library(hrbrthemes)
 
-DatenEmma <- read_excel("/Users/ChrisHemingway/Desktop/Doktorarbeit/r_programming/EMMA-Paper/DatenEmma.xlsx", 
+DatenEmma <- read_excel("C:/Users/Asus/Documents/Doktorarbeit II/Tabellen/DatenEmma.xlsx", 
                         sheet = "Tabelle1", col_types = c("text", 
                                                           "text",
                                                           "text",
